@@ -3,6 +3,7 @@ package guru.springframework.integration;
 import guru.springframework.domain.PageView;
 import guru.springframework.model.events.PageViewEvent;
 import guru.springframework.repositories.PageViewsRepository;
+import jakarta.xml.bind.JAXB;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -11,13 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.dsl.channel.MessageChannels;
+import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
-import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +38,7 @@ public class RabbitConfig {
 
     @Bean(name = AMQP_CHANNEL)
     public MessageChannel amqpInputChannel() {
-        return MessageChannels.direct().get();
+        return MessageChannels.direct().getObject();
     }
 
     @Bean
@@ -51,7 +51,7 @@ public class RabbitConfig {
 
     @Bean
     public AmqpInboundChannelAdapter amqpInboundChannelAdapterPageView(SimpleMessageListenerContainer listenerContainer,
-                                                        @Qualifier("amqpInputChannel") MessageChannel inboundChannel) {
+                                                                       @Qualifier("amqpInputChannel") MessageChannel inboundChannel) {
         AmqpInboundChannelAdapter adapter = new AmqpInboundChannelAdapter(listenerContainer);
         adapter.setOutputChannel(inboundChannel);
         return adapter;
@@ -72,7 +72,7 @@ public class RabbitConfig {
 
                 InputStream is = new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8));
 
-                PageViewEvent pageViewEvent =  JAXB.unmarshal(is, PageViewEvent.class);
+                PageViewEvent pageViewEvent = JAXB.unmarshal(is, PageViewEvent.class);
 
                 PageView pageView = new PageView();
                 pageView.setPageUrl(pageViewEvent.getPageUrl());

@@ -2,6 +2,7 @@ package guru.springframework;
 
 import guru.springframework.integration.RabbitConfig;
 import guru.springframework.model.events.PageViewEvent;
+import jakarta.xml.bind.JAXB;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.xml.bind.JAXB;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
